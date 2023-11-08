@@ -145,8 +145,9 @@ local spells = {
     entereza = GetSpellInfo(48792),
     pacto_pet = GetSpellInfo(48743),
     kick = GetSpellInfo(47528),
+    CorpseExplosion = GetSpellInfo(51328),
     roer = GetSpellInfo(47481),
-    Corpse_Explosion = GetSpellInfo(51328),
+    saltar = GetSpellInfo(47482),
 
     };
 local ddebuffs ={
@@ -166,6 +167,7 @@ local queue = {
     "cd",
     "p_profana",
     "save",
+    "Corpse_Explosion",
     "potenciar_runas_cd",
     "Frost_defensive",
     "caparazon",
@@ -182,7 +184,6 @@ local queue = {
     "potenciar_runas",
     "p_sangre",
     "lik",
-    "Corpse Explosion - AoE",
 };
 local abilities = {
     -----------------------------------
@@ -276,22 +277,7 @@ local abilities = {
 		end
     end,
     -----------------------------------
-    ["Corpse Explosion - AoE"] = function()
-        if ni.unit.hp("target") < values.entereza then     
-            if enables["Corpse_Explosion"] then
-             if ni.spell.available(spells.Corpse_Explosion) then 
-                if #ni.unit.enemiesinrange("pet", 10) > 1 
-                    and ni.unit.creaturetype("pet") == 6 then
-                        ni.spell.cast(spells.roer, "target")
-                        ni.spell.delaycast(spells.Corpse_Explosion, "pet", 1.5)
-                    elseif #ni.unit.corpsesinrange("player", 30) > 1 then 
-                            ni.spell.delaycast(spells.Corpse_Explosion, corpses[i].guid, 1.5)
-                    return true
-                end
-            end
-        end    
-     end
-    end, 
+    
      -----------------------------------
 
     ["golpe_runa"] = function()
@@ -680,7 +666,22 @@ local abilities = {
     end,
             
     --------------------------
-    
+    ["Corpse_Explosion"] = function()
+        if ni.unit.hp("target") < 20 then
+            if ni.unit.creaturetype("playerpet") == 6 then
+                if ni.spell.available(spells.CorpseExplosion) then
+                    if not ni.unit.buff("target", 642)
+                    and not ni.unit.buff("target", 48707) then
+                        ni.spell.cast("saltar","target")
+                        ni.spell.cast("roer","target")
+                        if ni.unit.meleerange("pet", "target") then
+                            ni.spell.delaycast(spells.CorpseExplosion, "pet", 1.5)
+                        end    
+                    end
+                end
+            end
+        end    
+    end,
     --------------------------
     ["potenciar_runas"] = function()
         if cache.PlayerCombat
