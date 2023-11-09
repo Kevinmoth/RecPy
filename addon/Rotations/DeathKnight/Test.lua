@@ -2,31 +2,25 @@ local spells = {
     CorpseExplosion = GetSpellInfo(51328),
     roer = GetSpellInfo(47481),
     saltar = GetSpellInfo(47482),
-    };
+};
 
 local queue = {
-    "testeo",
-    "Corpse_Explosion",
+    "test",
+    "CorpseExplosion",  -- Cambiado a "CorpseExplosion"
 };
 
 local abilities = {
-    
-["Corpse_Explosion"] = function()
-    if ni.unit.hp("target") < 20 then
-        if ni.unit.creaturetype("playerpet") == 6 then
-            if ni.spell.available(spells.CorpseExplosion) then
-                if not ni.unit.buff("target", 642)
-                and not ni.unit.buff("target", 48707) then
-                    ni.spell.cast("saltar","target")
-                    ni.spell.cast("roer","target")
-                    if ni.unit.meleerange("pet", "target") then
-                        ni.spell.delaycast(spells.CorpseExplosion, "pet", 1.5)
-                    end    
-                end
+
+    ["test"] = function (event, ...)
+        if event == "UNIT_SPELLCAST_SUCCEEDED" then
+            local unit, spell = ...
+            if unit == "player" then 
+                print("Se registró el uso de la spell")
             end
         end
-    end    
-end,
-};
+    end,
+
+},
+
 
 ni.bootstrap.profile("Test", queue, abilities)
