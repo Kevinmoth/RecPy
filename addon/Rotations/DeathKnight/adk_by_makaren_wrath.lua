@@ -1732,7 +1732,7 @@ else
         CastSpellByName("Gnaw")
         return true
     end
-end     
+end end,     
         --------------------------
 
 
