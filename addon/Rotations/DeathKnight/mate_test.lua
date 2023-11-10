@@ -331,7 +331,6 @@ local abilities = {
                     for i = 1, #enemies do
                         local target = enemies[i].guid
                         if ni.unit.iscasting(target)
-                        and ni.unit.castingpercent("target") >= 80
                         or ni.unit.ischanneling(target) then
                             local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo(target)
                             if inputs.kiick == ""
@@ -380,6 +379,16 @@ local abilities = {
                     end
                 end
             end
+        end
+    end,
+    --------------------------
+    ["Gloves"] = function()
+        if UnitAffectingCombat("player")
+        and ni.player.slotcastable(10)
+        and ni.player.slotcd(10) == 0
+        and ni.player.distance("target") ~= nil
+        and ni.player.distance("target") <= 24 then
+            return ni.player.useinventoryitem(10, "target")
         end
     end,
     --------------------------
