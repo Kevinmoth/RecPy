@@ -34,6 +34,15 @@ local values = {
         potenciar_cd = 40,
         
 }
+
+local function en_pompa()
+    if ni.unit.buff("target",642 ) then
+        return false
+    else 
+        return true    
+    end    
+end
+
 local inputs = {
     kiick = "",
 }
@@ -336,7 +345,6 @@ local abilities = {
                         end
                     end 
                 elseif ni.unit.iscasting("target")
-                and ni.unit.castingpercent("target") >= 80
                 or ni.unit.ischanneling("target") then
                     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo("target")
                     if ni.spell.available(spells.kick)
@@ -353,7 +361,6 @@ local abilities = {
                     for i = 1, #enemies do
                         local target = enemies[i].guid
                         if ni.unit.iscasting(target)
-                        and ni.unit.castingpercent("target") >= 80
                         or ni.unit.ischanneling(target) then
                             local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo(target)
                             if ni.spell.available(spells.kick)
@@ -364,7 +371,6 @@ local abilities = {
                         end
                     end 
                 elseif ni.unit.iscasting("target")
-                and ni.unit.castingpercent("target") >= 80
                 or ni.unit.ischanneling("target") then
                     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo("target")
                     if ni.spell.available(spells.kick)
@@ -486,7 +492,8 @@ local abilities = {
         if ni.unit.hp("player") < values.kamen then
             -- Verificar si el objetivo tiene los dos debuffs
             if  ni.unit.debuff("target", 55078, "player")
-            and ni.unit.debuff("target", 55078, "player") then
+            and ni.unit.debuff("target", 55078, "player") 
+            and en_pompa() then
                 if ni.spell.available(spells.golpe_mortal) and ni.spell.valid("target", spells.golpe_mortal, false, true, true) then
                     ni.spell.cast(spells.golpe_mortal, "target")
                 end
@@ -527,6 +534,7 @@ local abilities = {
     -------------------------
     ["pestilencia"] = function()
         if enables["pestilencia"]
+        and en_pompa()
         and not cache.control
         and cache.PlayerCombat
         and cache.dots == true
@@ -551,6 +559,7 @@ local abilities = {
 
     ["pestilencia_aoe"] = function()
         if enables["pestilencia_aoe"]
+        and en_pompa()
         and not cache.control
         and cache.PlayerCombat
         and cache.dots == true then
@@ -592,6 +601,7 @@ local abilities = {
     --------------------------
     ["cadenas"] = function()
         if cache.PlayerCombat
+        and en_pompa()
         and not cache.control
         and not ni.unit.debuff("target", 55095, "player")
         and ni.spell.valid("target", spells.cadenas, false, true, true)
@@ -603,6 +613,7 @@ local abilities = {
     --------------------------
     ["golpe_peste"] = function()
         if not cache.control
+        and en_pompa()
         and cache.PlayerCombat
         and not ni.unit.debuff("target", 55078, "player")
         and ni.spell.valid("target", spells.golpe_peste, false, true, true)
@@ -614,6 +625,7 @@ local abilities = {
     --------------------------
     ["golpe_sangriento"] = function()
         if cache.PlayerCombat
+        and en_pompa()
         and not cache.control
         and cache.dots == true
         and ni.unit.buffremaining("player", 66803) < 1
@@ -626,6 +638,7 @@ local abilities = {
     --------------------------
     ["golpe_plaga"] = function()
         if cache.PlayerCombat
+        and en_pompa()
         and not cache.control
         and cache.dots == true
         and ni.spell.valid("target", spells.golpe_plaga, false, true, true)
@@ -647,7 +660,9 @@ local abilities = {
     --------------------------
     ["lik_buf"] = function()
         if cache.PlayerCombat
+        and en_pompa()
         and not cache.control
+        and not ni.unit.buff("target",48707)
         and cache.dots == true
         and not ni.player.buff(304809)
         and ni.spell.valid("target", spells.lik, false, true, true)
@@ -661,7 +676,7 @@ local abilities = {
         if ni.spell.available(spells.gargola) then
             if ni.unit.buff("player", 53365) then
                 if ni.unit.buff("player", 67773) then
-                    if ni.unit.buff("player", 67708) then
+                    if ni.unit.buff("player", 67773) then
                         ni.spell.cast(spells.gargola, "target")
                     end
                 end
@@ -716,7 +731,9 @@ local abilities = {
     --------------------------
     ["lik"] = function()
         if cache.PlayerCombat
+        and en_pompa()
         and not cache.control
+        and not ni.unit.buff("target",48707)
         and ni.spell.valid("target", spells.lik, false, true, true)
         and ni.spell.available(spells.lik) then
             ni.spell.cast(spells.lik, "target")
