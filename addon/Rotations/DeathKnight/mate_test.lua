@@ -322,6 +322,7 @@ local abilities = {
                     for i = 1, #enemies do
                         local target = enemies[i].guid
                         if ni.unit.iscasting(target)
+                        and ni.unit.castingpercent("target") >= 80
                         or ni.unit.ischanneling(target) then
                             local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo(target)
                             if inputs.kiick == ""
@@ -335,6 +336,7 @@ local abilities = {
                         end
                     end 
                 elseif ni.unit.iscasting("target")
+                and ni.unit.castingpercent("target") >= 80
                 or ni.unit.ischanneling("target") then
                     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo("target")
                     if ni.spell.available(spells.kick)
@@ -351,6 +353,7 @@ local abilities = {
                     for i = 1, #enemies do
                         local target = enemies[i].guid
                         if ni.unit.iscasting(target)
+                        and ni.unit.castingpercent("target") >= 80
                         or ni.unit.ischanneling(target) then
                             local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo(target)
                             if ni.spell.available(spells.kick)
@@ -361,6 +364,7 @@ local abilities = {
                         end
                     end 
                 elseif ni.unit.iscasting("target")
+                and ni.unit.castingpercent("target") >= 80
                 or ni.unit.ischanneling("target") then
                     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, interrupt = UnitCastingInfo("target")
                     if ni.spell.available(spells.kick)
