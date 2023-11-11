@@ -1,13 +1,13 @@
 --Diccionario de funciones:
 -- sindra = GetSpellInfo(69766) (Almacena una spell en una variable)
 -- ni.unit.buff("target/player", Id) devuelve true o false si el player o target tiene un buff
--- ni.spell.available(spells.golpe_runa) returna true o false segun la habilidad sete o no disponible
+-- ni.spell.available(spells.golpe_runa) returna true o false segun la habilidad este o no disponible
 -- ni.spell.cast(spells.golpe_runa) castea una habilidad que no requiere target
 -- ni.spell.cast(spells.cadenas, "target") castea una habilidad al target
--- ni.player.runtext("/petattack") envia un texto, usado apra comandos 
+-- ni.player.runtext("/petattack") envia un texto al chat
 -- ni.unit.hp("player") devuelve el porcentaje de salud que tenga el target/player
 
-local t4=0
+
 local enables = {
     ["target"] = true,
     ["escudo_oseo"] = true,
@@ -25,10 +25,11 @@ local enables = {
     ["kick_2"] = false,
     ["kick_3"] = false,
     ["debug"] = false,
-    ["Corpse_Explosion"] = true
+    ["Corpse_Explosion"] = true,
+    ["cohetes_al_totem"] = false
 }
 local values = {
-    kamen = 35,
+        kamen = 35,
         pacto_pet = 20,
         entereza = 30,
         potenciar_cd = 40,
@@ -57,7 +58,9 @@ local function GUICallback(key, item_type, value)
 		inputs[key] = value;
 	elseif item_type == "menu" then
 		menus[key] = value;
-	end
+    
+    end    
+
 end
 local items = {
     settingsfile = "adk_4t4_by_makaren.json",
@@ -75,6 +78,7 @@ local items = {
         { type = "entry", text = ni.spell.icon(57623).." cuerno Automatico", tooltip ="Utiliza automáticamente cuerno cuando no lo tienes .", enabled = true, key = "cuerno" },
         { type = "entry", text = ni.spell.icon(49222).." Auto Bone Shield", tooltip ="Utiliza automáticamente el Escudo Óseo si no está presente.", enabled = true, key = "escudo_oseo" },
         { type = "separator" },
+        { type = "entry", text = ni.spell.icon(54757).."Pirocohetes al totem", tooltip ="Dispara cohetes a los totems", enabled = false, key = "cohetes_al_totem" },
         { type = "entry", text = ni.spell.icon(46584).." Auto call Necrofago", tooltip ="Saca al necrofago automaticamente", enabled = true, key = "pet" },
         { type = "separator" },
     { type = "entry", text = ni.spell.icon(24803).." Mostrar depuracion en chat", enabled = false, key = "debug" },
@@ -93,12 +97,8 @@ local items = {
 		height = 15,
 		key = "kiick"
 	},
-        { type = "page", number = 3, text = "|cffFFFF00Verde|r" },
-        { type = "entry", text = ni.spell.icon(48707)},
-        { type = "separator" },
-        { type = "entry", text = ni.spell.icon(300996).." La llama de la legiOn", tooltip ="|cFF00FFFFИк/Ивк(Jaraxxus)|r", enabled = true, key = "ik" },
-        { type = "entry", text = ni.spell.icon(71264).." Enjambre de sombras", tooltip ="|cFF00FFFFЦлк(Lana'atel)|r", enabled = true, key = "lana" },
-        { type = "page", number = 4, text = "|cffFFFF00cajas fuertes|r" },
+        
+        { type = "page", number = 3, text = "|cffFFFF00cajas fuertes|r" },
         { type = "separator" },
         { type = "entry", text = ni.spell.icon(48792).." Entereza ligada al Hielo", tooltip ="Usar entereza ligada al Hielo para |cFF00FF00Hp <|r\
 Работает в связке e функцией TTD(Time To Die)", enabled = true, value = 40, min = 1, max = 100, step = 1, key = "entereza" },
@@ -106,7 +106,7 @@ local items = {
 Работает в связке e функцией TTD(Time To Die)", enabled = true, value = 20, min = 1, max = 100, step = 1, key = "pacto_pet" },
         { type = "entry", text = ni.spell.icon(11729).." Piedra de la Salud", tooltip ="Usar pepino en |cFF00FF00Hp <|r\
 Работает в связке e функцией TTD(Time To Die)", enabled = true, value = 30, min = 1, max = 100, step = 1, key = "kamen" },
-	{ type = "page", number = 5, text = "|cffFFFF00By Matecitos|r" },
+	{ type = "page", number = 4, text = "|cffFFFF00By Matecitos|r" },
     	{ type = "separator" },
         { type = "entry", text = ni.spell.icon(48792).." Usar Potenciar arma de runas cuando el objetivo tenga", tooltip ="Solo utilizara el cd cuando el objetivo este con el humbral de vida indicado |cFF00FF00Hp <|r\
 ", enabled = true, value = 40, min = 1, max = 100, step = 1, key = "potenciar_cd" },
@@ -215,8 +215,8 @@ local abilities = {
                 if ni.unit.istotem(k) 
                     and UnitCanAttack("player", k) then
                local name = UnitName(k);
-                  if name == "Tótem derribador" 
-                  or name == "Tótem Nexo Terrestre" 
+                  if name == "Tótem Nexo Terrestre" 
+                  or name == "Tótem derribador" 
                   or name == "Stoneskin Totem" 
                   or name == "Totem of Wrath" 
                   or name == "Tremor Totem" 
@@ -383,12 +383,14 @@ local abilities = {
     end,
     --------------------------
     ["Gloves"] = function()
-        if UnitAffectingCombat("player")
-        and ni.player.slotcastable(10)
-        and ni.player.slotcd(10) == 0
-        and ni.player.distance("target") ~= nil
-        and ni.player.distance("target") <= 24 then
+        if not enables["cohetes_al_totem"] then
+            if UnitAffectingCombat("player")
+            and ni.player.slotcastable(10)
+            and ni.player.slotcd(10) == 0
+            and ni.player.distance("target") ~= nil
+            and ni.player.distance("target") <= 24 then
             return ni.player.useinventoryitem(10, "target")
+            end
         end
     end,
     --------------------------
@@ -422,10 +424,6 @@ local abilities = {
             and cache.PlayerCombat
             and ni.player.hasitem(50085) then
                 ni.player.useitem(50085)
-            end
-            if ni.player.slotcastable(10)
-            and ni.player.slotcd(10) == 0 then
-                ni.player.useinventoryitem(10)
             end
             if ni.player.slotcastable(14)
             and ni.player.slotcd(14) == 0 then
@@ -526,21 +524,21 @@ local abilities = {
             end
         end
     end,
-    --------------------------
-    [[["Frost_defensive"] = function()
-        local hasTargetBuff = ni.unit.buffs("target", 51713, "player") or ni.unit.buffs("target", 46924, "player")
-        local isUnderThreshold = ni.unit.hp("player") < values.kamen
-        local isBuff48263Missing = not ni.player.buff(48263)
-        local isPresenciaEscarchaAvailable = ni.spell.available(spells.presencia_escarcha)
+    -------------------------- 
     
-        if (hasTargetBuff or isUnderThreshold) and isBuff48263Missing and isPresenciaEscarchaAvailable then
-            ni.spell.cast(spells.presencia_escarcha)
+    -------------------------- 
+    ["Frost_defensive"] = function()
+        if ni.unit.buffs("target", 51713, "player")
+         or ni.unit.buffs("target", 46924, "player")
+         or ni.unit.hp("player") < values.kamen then
+            if ni.player.buff(48263) then
+                if ni.spell.available(spells.presencia_escarcha) then
+                    ni.spell.cast(spells.presencia_escarcha)
+                end
+            end
         end
-        if ni.unit.hp("player") > values.kamen and not ni.player.buff(48265) then 
-            ni.spell.cast(spells.presencia_escarcha)
-        end
-    end,]],
-    -------------------------
+    end,    
+    ------------------------
     ["pestilencia"] = function()
         if enables["pestilencia"]
         and en_pompa()
@@ -562,8 +560,8 @@ local abilities = {
         end
     end,
     --------------------------
-    
-
+    --["skater_pet"]= function()
+        
     --------------------------
 
     ["pestilencia_aoe"] = function()
@@ -612,12 +610,17 @@ local abilities = {
         if cache.PlayerCombat
         and en_pompa()
         and not cache.control
-        and not ni.unit.debuff("target", 55095, "player")
+        and not ni.unit.debuff("target", 55095)
         and ni.spell.valid("target", spells.cadenas, false, true, true)
         and ni.spell.available(spells.cadenas) then
             ni.spell.cast(spells.cadenas, "target")
             cache.pet = true
         end
+        if cache.PlayerCombat
+        and not ni.unit.inmelee("player", "target")
+        and not ni.unit.debuff("target",45524) then
+            ni.spell.cast(spells.cadenas, "target")
+        end   
     end,
     --------------------------
     ["golpe_peste"] = function()
