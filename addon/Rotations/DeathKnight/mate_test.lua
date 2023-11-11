@@ -26,7 +26,7 @@ local enables = {
     ["kick_3"] = false,
     ["debug"] = false,
     ["Corpse_Explosion"] = true,
-    ["cohetes_al_totem"] = false
+    ["cohetes_al_totem"] = true,
 }
 local values = {
         kamen = 35,
@@ -78,7 +78,7 @@ local items = {
         { type = "entry", text = ni.spell.icon(57623).." cuerno Automatico", tooltip ="Utiliza automáticamente cuerno cuando no lo tienes .", enabled = true, key = "cuerno" },
         { type = "entry", text = ni.spell.icon(49222).." Auto Bone Shield", tooltip ="Utiliza automáticamente el Escudo Óseo si no está presente.", enabled = true, key = "escudo_oseo" },
         { type = "separator" },
-        { type = "entry", text = ni.spell.icon(54757).."Pirocohetes al totem", tooltip ="Dispara cohetes a los totems", enabled = false, key = "cohetes_al_totem" },
+        { type = "entry", text = ni.spell.icon(54757).."Pirocohetes al totem", tooltip ="Dispara cohetes a los totems", enabled = true, key = "cohetes_al_totem" },
         { type = "entry", text = ni.spell.icon(46584).." Auto call Necrofago", tooltip ="Saca al necrofago automaticamente", enabled = true, key = "pet" },
         { type = "separator" },
     { type = "entry", text = ni.spell.icon(24803).." Mostrar depuracion en chat", enabled = false, key = "debug" },
@@ -180,6 +180,7 @@ local queue = {
     "potenciar_runas_cd",
     "Frost_defensive",
     "caparazon",
+    "gloves",
     "pestilencia",
     "pestilencia_aoe",
     "buff",
@@ -225,6 +226,10 @@ local abilities = {
                     local target = UnitGUID("target");
                     ni.player.target(k);
                     ni.player.runtext("/petattack");
+                    if ni.player.slotcastable(10)
+                    and ni.player.slotcd(10) == 0 then
+                        ni.player.useinventoryitem(10)
+                        end
                     ni.player.target(target);
                     return true;
                   end
@@ -382,14 +387,14 @@ local abilities = {
         end
     end,
     --------------------------
-    ["Gloves"] = function()
-        if not enables["cohetes_al_totem"] then
-            if UnitAffectingCombat("player")
-            and ni.player.slotcastable(10)
-            and ni.player.slotcd(10) == 0
-            and ni.player.distance("target") ~= nil
-            and ni.player.distance("target") <= 24 then
-            return ni.player.useinventoryitem(10, "target")
+    ["gloves"] = function()
+        if cache.PlayerCombat then
+            if not enables["cohetes_al_totem"] then
+                if ni.player.slotcastable(10)
+                and ni.player.slotcd(10) == 0 then
+                    ni.player.useinventoryitem(10)
+                
+                end
             end
         end
     end,
