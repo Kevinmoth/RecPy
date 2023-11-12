@@ -6,6 +6,7 @@
 -- ni.spell.cast(spells.cadenas, "target") castea una habilidad al target
 -- ni.player.runtext("/petattack") envia un texto al chat
 -- ni.unit.hp("player") devuelve el porcentaje de salud que tenga el target/player
+-- UnitAffectingCombat("player") devuelve true si estas en combate
 
 
 local enables = {
@@ -27,6 +28,7 @@ local enables = {
     ["debug"] = false,
     ["Corpse_Explosion"] = true,
     ["cohetes_al_totem"] = true,
+    ["modo_heal"] = false,
 }
 local values = {
         kamen = 35,
@@ -71,6 +73,7 @@ local items = {
         { type = "separator" },
         { type = "page", number = 1, text = "|cffFFFF00ajustes generales|r" },
         { type = "separator" },
+        { type = "entry" , text = ni.pell.icon(49924).."Heal Mode" , tooltip = "Modo curacion (Golpe letal)", enabled = true, key = "modo_heal"},
         { type = "entry", text = ni.spell.icon(6603).." Auto targeting", tooltip ="Selecciona automáticamente un objetivo cuando no hay uno", enabled = true, key = "target" },
         { type = "separator" },
         { type = "entry", text = ni.spell.icon(48265).." Cambio de puntales", tooltip ="Cambio automático de puntales", enabled = true, key = "presencias" },
@@ -163,6 +166,7 @@ local ddebuffs ={
     sindra = GetSpellInfo(69766),
     sindra_metka = GetSpellInfo(70126),
     }
+
 local queue = {
     "golpe_mortal",
     "info",
@@ -194,7 +198,9 @@ local queue = {
     "potenciar_runas",
     "p_sangre",
     "lik",
+    "heal_mode"
 };
+
 local abilities = {
     -----------------------------------
     ["info"] = function()
@@ -204,7 +210,7 @@ local abilities = {
             print("|cFFFF0000 =========================|r\
 |Perfil privado de Mate|r\
 |Vercion 2.0|r\
-|Fanpei https://funpay.com/users/7303789/|r\
+|https://github.com/Kevinmoth|r\
 |cFFFF0000=========================|r")
         end
     end,
@@ -240,7 +246,7 @@ local abilities = {
     ------------------------
     ["cache"] = function()
         cache.PlayerCombat = UnitAffectingCombat("player") or false;
-        cache.sindra = ni.unit.debuffstacks("player", "Пронизывающая стужа") <= 7;
+        cache.sindra = ni.unit.debuffstacks("player", "Escalofrío penetrante") <= 7;
         if ni.unit.debuff("target", 55078, "player")
         and ni.unit.debuff("target", 55095, "player") then
             cache.dots = true
@@ -253,21 +259,22 @@ local abilities = {
         else
             cache.dots_obnov = false
         end
-        if ni.unit.debuff("target", "Сглаз") 
-        or ni.unit.debuff("target", "Устрашающий крик") 
-        or ni.unit.debuff("target", "Гнев деревьев") 
-        or ni.unit.debuff("target", "Смерч") 
-        or ni.unit.debuff("target", "Превращение") 
-        or ni.unit.debuff("target", "Замораживающая ловушка") 
-        or ni.unit.debuff("target", "Покаяние") 
-        or ni.unit.debuff("target", "Ослепление") 
-        or ni.unit.debuff("target", "Ошеломление") 
-        or ni.unit.debuff("target", "Вой ужаса") 
-        or ni.unit.debuff("target", "Изгнание") 
-        or ni.unit.debuff("target", "Страх") 
-        or ni.unit.debuff("target", "Спячка") 
-        or ni.unit.debuff("target", "Отпугивание зверя") 
-        or ni.unit.debuff("target", "Ментальный крик") then
+        if ni.unit.debuff("target", "Maleficio") 
+        or ni.unit.debuff("target", "Grito intimidador") 
+        or ni.unit.debuff("target", "Enredaderas") 
+        or ni.unit.debuff("target", "Ciclón") 
+        or ni.unit.debuff("target", "Polimorfia") 
+        or ni.unit.debuff("target", "Trampa congelante") 
+        or ni.unit.debuff("target", "Trampa") 
+        or ni.unit.debuff("target", "Arrepentimiento") 
+        or ni.unit.debuff("target", "Ceguera") 
+        or ni.unit.debuff("target", "Porrazo") 
+        or ni.unit.debuff("target", "Aullido de terror") 
+        or ni.unit.debuff("target", "Desterrar") 
+        or ni.unit.debuff("target", "Miedo") 
+        or ni.unit.debuff("target", "Hibernar") 
+        or ni.unit.debuff("target", "Bestia temible") 
+        or ni.unit.debuff("target", "Alarido psíquico") then
             cache.control = true
         else
             cache.control = false
@@ -291,7 +298,19 @@ local abilities = {
 		end
     end,
     -----------------------------------
-    
+    ["heal_mode"] = function()
+        if enables ["modo_heal"] then
+            if ni.unit.hp("player") < 90 then
+                if  ni.unit.debuff("target", 55078, "player")
+                and ni.unit.debuff("target", 55078, "player") 
+                and en_pompa() then
+                    if ni.spell.available(spells.golpe_mortal) and ni.spell.valid("target", spells.golpe_mortal, false, true, true) then
+                        ni.spell.cast(spells.golpe_mortal, "target")
+                    end
+                end
+            end  
+        end  
+    end,
      -----------------------------------
 
     ["golpe_runa"] = function()
@@ -310,10 +329,10 @@ local abilities = {
             if target__ == 0 then
                 ni.player.runtext("/startattack")
             end
-            if ni.objectmanager.contains("Король-лич") then
-                local lich = ni.objectmanager.objectGUID("Король-лич")
+            if ni.objectmanager.contains("The Lich King") then
+                local lich = ni.objectmanager.objectGUID("The Lich King")
                 local spell, _, _, _, _, endTime = UnitChannelInfo(lich)
-                if spell == ("Беспощадность зимы") then
+                if spell == ("Invierno sin remordimientos") then
                     ni.player.runtext("/petfollow")
                 elseif cache.pet == true then
                     ni.player.runtext("/petattack")
@@ -404,7 +423,7 @@ local abilities = {
 
     ["cd"] = function()
         if cache.PlayerCombat then
-            count = GetItemCount("Фрагмент души")
+            count = GetItemCount("Trozo de alma")
             if ni.spell.available(316466)
             and not ni.unit.buff("player", 316466) then
                 if count > 1 
@@ -534,9 +553,9 @@ local abilities = {
     -------------------------- 
     ["Frost_defensive"] = function()
         if ni.unit.buffs("target", 51713, "player")
-         or ni.unit.buffs("target", 46924, "player")
-         or ni.unit.hp("player") < values.kamen then
-            if ni.player.buff(48263) then
+        or ni.unit.buffs("target", 46924, "player")
+        or ni.unit.hp("player") < values.kamen then
+            if ni.player.buff(48265) then
                 if ni.spell.available(spells.presencia_escarcha) then
                     ni.spell.cast(spells.presencia_escarcha)
                 end

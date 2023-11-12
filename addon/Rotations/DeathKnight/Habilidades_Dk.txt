@@ -1,0 +1,26 @@
+
+
+
+local spells {
+
+Asolar
+golpe sangriento
+golpe de peste
+golpe con runa 
+Golpe letal 
+cadenas de hielo
+toque helado
+caparazon
+escudo antimagia
+entereza
+gargola
+presencia profana
+presencia de sangre 
+presencia de escarcha
+invocar necrofago
+invocar gargola
+
+
+
+    
+};
