@@ -161,6 +161,7 @@ local spells = {
     CorpseExplosion = GetSpellInfo(51328),
     roer = GetSpellInfo(47481),
     saltar = GetSpellInfo(47482),
+    acurrucarse = GetSpellInfo(47484),
 
     };
 local ddebuffs ={
@@ -305,6 +306,7 @@ local abilities = {
             if ni.unit.hp("player") < 90 then
                 if  ni.unit.debuff("target", 55078)
                 and ni.unit.debuff("target", 55078) 
+                and not ni.unit.buff("target", 48707)
                 and en_pompa() then
                     if ni.spell.available(spells.golpe_mortal) and ni.spell.valid("target", spells.golpe_mortal, false, true, true) then
                         ni.spell.cast(spells.golpe_mortal, "target")
@@ -313,6 +315,15 @@ local abilities = {
             end  
         end  
     end,
+     -----------------------------------
+    ["pet_def"]= function()
+        if ni.unit.hp("pet") < 20 then
+            if ni.spell.available(spells.saltar) then
+                ni.spell.cast("saltar","player")
+            ni.spell.cast("acurrucarse")
+            end
+        end
+    end,            
      -----------------------------------
 
     ["golpe_runa"] = function()
@@ -644,6 +655,8 @@ local abilities = {
         end
         if cache.PlayerCombat
         and not ni.unit.inmelee("player", "target")
+        and ni.spell.available(spells.cadenas)
+        and ni.spell.valid("target", spells.cadenas, false, true, true)
         and not ni.unit.debuff("target",45524) then
             ni.spell.cast(spells.cadenas, "target")
         end   
