@@ -28,7 +28,7 @@ local enables = {
     ["debug"] = false,
     ["Corpse_Explosion"] = true,
     ["cohetes_al_totem"] = true,
-    ["modo_heal"] = false,
+    ["modo_heal"] = true,
 }
 local values = {
         kamen = 35,
@@ -132,6 +132,7 @@ local cache = {
     dots_obnov = false,
     pet = true,
     control = false,
+    modo_heal = true,
     };
 local spells = {
     golpe_runa = GetSpellInfo(56815),
@@ -176,6 +177,7 @@ local queue = {
     "auto-target",
     "gargola_Buffed",
     "kick",
+    "heal_mode",
     "golpe_runa",
     "cd",
     "p_profana",
@@ -198,7 +200,7 @@ local queue = {
     "potenciar_runas",
     "p_sangre",
     "lik",
-    "heal_mode"
+    
 };
 
 local abilities = {
@@ -301,8 +303,8 @@ local abilities = {
     ["heal_mode"] = function()
         if enables ["modo_heal"] then
             if ni.unit.hp("player") < 90 then
-                if  ni.unit.debuff("target", 55078, "player")
-                and ni.unit.debuff("target", 55078, "player") 
+                if  ni.unit.debuff("target", 55078)
+                and ni.unit.debuff("target", 55078) 
                 and en_pompa() then
                     if ni.spell.available(spells.golpe_mortal) and ni.spell.valid("target", spells.golpe_mortal, false, true, true) then
                         ni.spell.cast(spells.golpe_mortal, "target")
