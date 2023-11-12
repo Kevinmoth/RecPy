@@ -201,6 +201,7 @@ local queue = {
     "potenciar_runas",
     "p_sangre",
     "lik",
+    "pet_def",
     
 };
 
