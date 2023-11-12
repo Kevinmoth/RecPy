@@ -73,7 +73,7 @@ local items = {
         { type = "separator" },
         { type = "page", number = 1, text = "|cffFFFF00ajustes generales|r" },
         { type = "separator" },
-        { type = "entry" , text = ni.pell.icon(49924).."Heal Mode" , tooltip = "Modo curacion (Golpe letal)", enabled = true, key = "modo_heal"},
+        { type = "entry" , text = ni.spell.icon(49924).."Heal Mode" , tooltip = "Modo curacion (Golpe letal)", enabled = true, key = "modo_heal"},
         { type = "entry", text = ni.spell.icon(6603).." Auto targeting", tooltip ="Selecciona automáticamente un objetivo cuando no hay uno", enabled = true, key = "target" },
         { type = "separator" },
         { type = "entry", text = ni.spell.icon(48265).." Cambio de puntales", tooltip ="Cambio automático de puntales", enabled = true, key = "presencias" },
