@@ -1,14 +1,3 @@
---Diccionario de funciones:
--- sindra = GetSpellInfo(69766) (Almacena una spell en una variable)
--- ni.unit.buff("target/player", Id) devuelve true o false si el player o target tiene un buff
--- ni.spell.available(spells.golpe_runa) returna true o false segun la habilidad este o no disponible
--- ni.spell.cast(spells.golpe_runa) castea una habilidad que no requiere target
--- ni.spell.cast(spells.cadenas, "target") castea una habilidad al target
--- ni.player.runtext("/petattack") envia un texto al chat
--- ni.unit.hp("player") devuelve el porcentaje de salud que tenga el target/player
--- UnitAffectingCombat("player") devuelve true si estas en combate
-
-
 local enables = {
     ["target"] = true,
     ["escudo_oseo"] = true,
@@ -37,7 +26,6 @@ local values = {
         potenciar_cd = 40,
         
 }
-
 local function en_pompa()
     if ni.unit.buff("target",642 ) then
         return false
@@ -62,7 +50,6 @@ local function GUICallback(key, item_type, value)
 		menus[key] = value;
     
     end    
-
 end
 local items = {
     settingsfile = "adk_4t4_by_makaren.json",
@@ -122,7 +109,7 @@ end;
 local function OnUnLoad()  
 	ni.GUI.DestroyFrame("adk_4t4_by_makaren");
 end;
-----------------------------------------------------
+
 local cache = {
     potenciar_cd = false,
     sindra = false,
@@ -135,7 +122,6 @@ local cache = {
     control = false,
     modo_heal = true,
     };
-----------------------------------------------------
 local spells = {
     golpe_runa = GetSpellInfo(56815),
     cuerno = GetSpellInfo(57623),
@@ -164,21 +150,17 @@ local spells = {
     roer = GetSpellInfo(47481),
     saltar = GetSpellInfo(47482),
     acurrucarse = GetSpellInfo(47484),
-
     };
-----------------------------------------------------
 local debuffs ={
     sindra = GetSpellInfo(69766),
-    sindra_metka = GetSpellInfo(70126),
-    }
-----------------------------------------------------
+    sindra_metka = GetSpellInfo(70126),}
 local queue = {
     "golpe_mortal",
     "info",
     "Totem Smash",
     "cache",
     "pause",
-    "auto-target",
+    "autotarget",
     "gargola_Buffed",
     "kick",
     "heal_mode",
@@ -205,11 +187,9 @@ local queue = {
     "p_sangre",
     "lik",
     "pet_def",
-    
 };
-
 local abilities = {
-    -------------------------------------------------------------
+    
     ["info"] = function()
         if cache.info == true
         and not ni.vars.coin then
@@ -250,7 +230,7 @@ local abilities = {
             end
         end
     end,    
-    --------------------------------------------------
+    
     ["cache"] = function()
         cache.PlayerCombat = UnitAffectingCombat("player") or false;
         cache.sindra = ni.unit.debuffstacks("player", "Escalofrío penetrante") <= 7;
@@ -292,7 +272,6 @@ local abilities = {
             ni.vars.debug = false
         end
     end,
-    --------------------------------------------------
     ["pause"] = function()
         if IsMounted()
 		or UnitInVehicle("player")
@@ -304,7 +283,6 @@ local abilities = {
 			return true;
 		end
     end,
-    -------------------------------------------------------------
     ["heal_mode"] = function()
         if enables ["modo_heal"] then
             if ni.unit.hp("player") < 90 then
@@ -319,7 +297,7 @@ local abilities = {
             end  
         end  
     end,
-     -------------------------------------------------------------
+     
     ["pet_def"]= function()
         if ni.unit.hp("playerpet") < 20 then
             if ni.player.petcd(spells.acurrucarse) == 0 then
@@ -329,7 +307,7 @@ local abilities = {
         end
     end,    
              
-     -------------------------------------------------------------
+     
 
     ["golpe_runa"] = function()
     if ni.unit.buff("target", 19263) or ni.unit.buff("player", 26669) then
@@ -338,8 +316,8 @@ local abilities = {
             end
         end
     end,			
-	 ----------------------------------------------------
-    ["auto-target"] = function()
+	 
+    ["autotarget"] = function()
         local target_ = ni.objects["target"];
         local target__ = target_.guid
         if enables["target"]
@@ -364,7 +342,7 @@ local abilities = {
             end
         end
     end,
-    -------------------------------------------------------------
+    
     ["kick"] = function()
         if enables["kick_3"] then
             if enables["kick"] then
@@ -423,7 +401,7 @@ local abilities = {
             end
         end
     end,
-    ----------------------------------------------------
+    
     ["gloves"] = function()
         if cache.PlayerCombat then
             if not enables["cohetes_al_totem"] then
@@ -435,10 +413,7 @@ local abilities = {
             end
         end
     end,
-    ----------------------------------------------------
-
-
-
+    
     ["cd"] = function()
         if cache.PlayerCombat then
             count = GetItemCount("Trozo de alma")
@@ -484,7 +459,7 @@ local abilities = {
             end
         end
     end,
-    ----------------------------------------------------
+    
     ["p_profana"] = function()
         if enables["presencias"]
         and not cache.PlayerCombat
@@ -495,7 +470,7 @@ local abilities = {
             end
         end
     end,
-    ----------------------------------------------------
+    
     ["save"] = function()
         if cache.PlayerCombat then
             if enables["entereza"]
@@ -536,10 +511,9 @@ local abilities = {
             end
         end
     end,
-    ----------------------------------------------------
+    
     ["golpe_mortal"] = function()
         if ni.unit.hp("player") < values.kamen then
-            -- Verificar si el objetivo tiene los dos debuffs
             if  ni.unit.debuff("target", 55078, "player")
             and ni.unit.debuff("target", 55078, "player") 
             and en_pompa() then
@@ -549,7 +523,7 @@ local abilities = {
             end
         end    
     end,
-    ----------------------------------------------------
+    
     ["caparazon"] = function()
         if cache.PlayerCombat
         and enables["ik"]
@@ -566,9 +540,8 @@ local abilities = {
             end
         end
     end,
-----------------------------------------------------
+
     
--------------------------- --------------------------
     ["Frost_defensive"] = function()
         if ni.unit.buffs("target", 51713, "player")
         or ni.unit.buffs("target", 46924, "player")
@@ -580,7 +553,7 @@ local abilities = {
             end
         end
     end,    
-    --------------------------------------------------
+    
     ["pestilencia"] = function()
         if enables["pestilencia"]
         and en_pompa()
@@ -601,10 +574,6 @@ local abilities = {
             end
         end
     end,
-    --------------------------
-    --["skater_pet"]= function()
-        
-    --------------------------
 
     ["pestilencia_aoe"] = function()
         if enables["pestilencia_aoe"]
@@ -627,7 +596,7 @@ local abilities = {
             end
         end
     end,
-    -----------------------------------
+    
     ["buff"] = function()
         if enables["cuerno"]
         and not ni.player.buff(spells.cuerno)
@@ -647,7 +616,7 @@ local abilities = {
             end
         end
     end,
-    --------------------------
+    
     ["cadenas"] = function()
         if cache.PlayerCombat
         and en_pompa()
@@ -666,7 +635,7 @@ local abilities = {
             ni.spell.cast(spells.cadenas, "target")
         end   
     end,
-    --------------------------
+    
     ["golpe_peste"] = function()
         if not cache.control
         and en_pompa()
@@ -678,7 +647,7 @@ local abilities = {
             cache.pet = true
         end
     end,
-    --------------------------
+    
     ["golpe_sangriento"] = function()
         if cache.PlayerCombat
         and en_pompa()
@@ -691,7 +660,7 @@ local abilities = {
             cache.pet = true
         end
     end,
-    --------------------------
+    
     ["golpe_plaga"] = function()
         if cache.PlayerCombat
         and en_pompa()
@@ -703,7 +672,7 @@ local abilities = {
             cache.pet = true
         end
     end,
-    --------------------------
+    
     ["char_rass"] = function()
         if cache.PlayerCombat
         and not cache.control
@@ -713,7 +682,7 @@ local abilities = {
             cache.pet = true
           end
     end,
-    --------------------------
+    
     ["lik_buf"] = function()
         if cache.PlayerCombat
         and en_pompa()
@@ -727,7 +696,7 @@ local abilities = {
             cache.pet = true
         end
     end,
-    --------------------------
+    
     ["gargola_Buffed"] = function()
         if ni.spell.available(spells.gargola) then
             if ni.unit.buff("player", 53365) then
@@ -740,7 +709,7 @@ local abilities = {
         end
     end,
             
-    --------------------------
+    
     ["Corpse_Explosion"] = function()
         if ni.unit.hp("target") < 20 then
             if ni.unit.creaturetype("playerpet") == 6 then
@@ -757,7 +726,7 @@ local abilities = {
             end
         end    
     end,
-    --------------------------
+    
     ["potenciar_runas"] = function()
         if cache.PlayerCombat
         and not enables["potenciar_cd"]
@@ -773,7 +742,7 @@ local abilities = {
             end
         end
     end,
-    --------------------------
+    
     ["potenciar_runas_cd"] = function()
         if cache.PlayerCombat then
             if enables["potenciar_cd"]
@@ -784,7 +753,7 @@ local abilities = {
             end
         end
     end,
-    --------------------------
+    
     ["lik"] = function()
         if cache.PlayerCombat
         and en_pompa()
@@ -796,7 +765,7 @@ local abilities = {
             cache.pet = true
         end
     end,
-    --------------------------
+    
 };
 ni.bootstrap.profile("mate_test", queue, abilities, OnLoad, OnUnLoad);
 
