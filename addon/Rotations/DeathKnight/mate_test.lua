@@ -318,13 +318,14 @@ local abilities = {
     end,
      -----------------------------------
     ["pet_def"]= function()
-        if ni.unit.hp("pet") < 20 then
-            if ni.spell.available(spells.saltar) then
-                ni.spell.cast("saltar","player")
-            ni.spell.cast("acurrucarse")
+        if ni.unit.hp("playerpet") < 20 then
+            if ni.player.petcd(spells.acurrucarse) == 0 then
+                ni.spell.cast(spells.saltar,"player")
+                ni.spell.cast(spells.acurrucarse)
             end
         end
-    end,            
+    end,    
+             
      -----------------------------------
 
     ["golpe_runa"] = function()
